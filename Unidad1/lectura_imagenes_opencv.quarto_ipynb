@@ -1,0 +1,160 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "---\n",
+        "title: \"Lectura de imágenes con OpenCV\"\n",
+        "format:\n",
+        "  html:\n",
+        "    code-fold: true\n",
+        "jupyter: python3\n",
+        "---\n",
+        "\n",
+        "\n",
+        "## Introducción\n",
+        "\n",
+        "En esta práctica aprenderemos a leer diferentes tipos de imágenes usando **OpenCV** en Python.  \n",
+        "Trabajaremos en un entorno local con **Anaconda**, lo que nos permite usar bibliotecas adicionales para manejar formatos que OpenCV no soporta de forma nativa.\n",
+        "\n",
+        "OpenCV soporta de forma directa formatos como:\n",
+        "\n",
+        "- **JPG / JPEG**: compresión con pérdida\n",
+        "- **PNG**: compresión sin pérdida y canal alfa\n",
+        "- **TIFF**: admite profundidad de bits alta y múltiples páginas\n",
+        "- **BMP**: sin compresión, usado en entornos Windows\n",
+        "\n",
+        "Para formatos **RAW** (archivos de cámaras digitales, como `.CR2`, `.NEF`, `.ARW`), usaremos la librería `rawpy` junto con `imageio`, ya que OpenCV no los soporta directamente.\n",
+        "\n",
+        "---\n",
+        "\n",
+        "## Configuración inicial\n"
+      ],
+      "id": "e63f6e09"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "import cv2\n",
+        "import numpy as np\n",
+        "import matplotlib.pyplot as plt\n",
+        "import rawpy\n",
+        "import imageio.v2 as imageio\n",
+        "from pathlib import Path\n",
+        "\n",
+        "# Función auxiliar para mostrar imágenes en escala de grises o color\n",
+        "def mostrar_img(img, titulo=\"Imagen\", cmap=None):\n",
+        "    plt.figure(figsize=(5,5))\n",
+        "    if len(img.shape) == 2:  # Escala de grises\n",
+        "        plt.imshow(img, cmap='gray')\n",
+        "    else:  # Color (BGR a RGB para mostrar correctamente)\n",
+        "        plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))\n",
+        "    plt.title(titulo)\n",
+        "    plt.axis('off')\n",
+        "    plt.show()"
+      ],
+      "id": "991c6ad5",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "---\n",
+        "\n",
+        "## Lectura de imágenes comunes con OpenCV\n"
+      ],
+      "id": "74e7ea10"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "# Ruta a las imágenes (ajustar según tu carpeta local)\n",
+        "carpeta = Path(\"imagenes\")\n",
+        "\n",
+        "# JPG\n",
+        "img_jpg = cv2.imread(str(carpeta / \"foto.jpg\"))\n",
+        "mostrar_img(img_jpg, \"Imagen JPG\")\n",
+        "\n",
+        "# PNG con canal alfa (transparencia)\n",
+        "img_png = cv2.imread(str(carpeta / \"logo.png\"), cv2.IMREAD_UNCHANGED)\n",
+        "mostrar_img(img_png[:, :, :3], \"Imagen PNG (RGB)\")\n",
+        "\n",
+        "# TIFF en escala de grises\n",
+        "img_tiff = cv2.imread(str(carpeta / \"imagen.tiff\"), cv2.IMREAD_GRAYSCALE)\n",
+        "mostrar_img(img_tiff, \"Imagen TIFF (grises)\")"
+      ],
+      "id": "7b72d64f",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "---\n",
+        "\n",
+        "## Lectura de imágenes RAW\n",
+        "\n",
+        "OpenCV no puede leer directamente formatos RAW de cámaras digitales. Usaremos `rawpy` para convertirlos a un arreglo NumPy.\n"
+      ],
+      "id": "3dc0c78a"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "# Ejemplo con un archivo RAW (CR2 de Canon, NEF de Nikon, etc.)\n",
+        "ruta_raw = carpeta / \"ejemplo.CR2\"\n",
+        "\n",
+        "with rawpy.imread(str(ruta_raw)) as raw:\n",
+        "    rgb = raw.postprocess()\n",
+        "\n",
+        "# raw.postprocess() devuelve un arreglo RGB de 8 bits\n",
+        "mostrar_img(rgb, \"Imagen RAW procesada\")"
+      ],
+      "id": "f078e4db",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "---\n",
+        "\n",
+        "## Notas importantes\n",
+        "\n",
+        "- **Espacios de color**: OpenCV usa BGR por defecto para imágenes en color. Al mostrar con Matplotlib, es necesario convertir a RGB.\n",
+        "- **Canales alfa**: Si la imagen tiene transparencia (por ejemplo, PNG con 4 canales), OpenCV la carga con el canal alfa incluido si usamos `cv2.IMREAD_UNCHANGED`.\n",
+        "- **Compatibilidad RAW**: Los formatos RAW varían entre fabricantes; `rawpy` está basado en `libraw`, que ofrece soporte para una amplia variedad de cámaras.\n",
+        "\n",
+        "---\n",
+        "\n",
+        "## Conclusión\n",
+        "\n",
+        "En este ejemplo hemos cubierto la lectura de:\n",
+        "\n",
+        "- Imágenes estándar soportadas por OpenCV (JPG, PNG, TIFF, BMP)\n",
+        "- Archivos RAW usando bibliotecas externas\n",
+        "\n",
+        "Esto nos permite trabajar con una amplia variedad de formatos en un flujo de procesamiento digital de imágenes."
+      ],
+      "id": "b9178fe0"
+    }
+  ],
+  "metadata": {
+    "kernelspec": {
+      "name": "python3",
+      "language": "python",
+      "display_name": "Python 3 (ipykernel)",
+      "path": "/opt/miniconda3/envs/opencv_imgproc/share/jupyter/kernels/python3"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 5
+}
