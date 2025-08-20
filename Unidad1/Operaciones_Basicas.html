@@ -111,7 +111,7 @@ Estas operaciones son esenciales en el preprocesamiento de imágenes antes de ap
 </section>
 <section id="configuración-inicial" class="level2">
 <h2 class="anchored" data-anchor-id="configuración-inicial">Configuración inicial</h2>
-<div id="e41cd539" class="cell" data-execution_count="1">
+<div id="a7ad25a9" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cv2</span>
@@ -120,7 +120,7 @@ Estas operaciones son esenciales en el preprocesamiento de imágenes antes de ap
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Función auxiliar para mostrar imágenes en color o grises</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> mostrar_img(img, titulo<span class="op">=</span><span class="st">"Imagen"</span>):</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> mostrar_img(img, titulo<span class="op">=</span><span class="st">"Imagen"</span>, cmap<span class="op">=</span><span class="va">None</span>):</span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    plt.figure(figsize<span class="op">=</span>(<span class="dv">5</span>,<span class="dv">5</span>))</span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">len</span>(img.shape) <span class="op">==</span> <span class="dv">2</span>:  <span class="co"># Escala de grises</span></span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>        plt.imshow(img, cmap<span class="op">=</span><span class="st">'gray'</span>)</span>
@@ -149,7 +149,7 @@ Estas operaciones son esenciales en el preprocesamiento de imágenes antes de ap
 </section>
 <section id="redimensionamiento-resize" class="level2">
 <h2 class="anchored" data-anchor-id="redimensionamiento-resize">Redimensionamiento (Resize)</h2>
-<div id="889f58bf" class="cell" data-execution_count="2">
+<div id="1c30d122" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Imagen al doble de tamaño</span></span>
@@ -179,7 +179,7 @@ Estas operaciones son esenciales en el preprocesamiento de imágenes antes de ap
 </section>
 <section id="recorte-crop" class="level2">
 <h2 class="anchored" data-anchor-id="recorte-crop">Recorte (Crop)</h2>
-<div id="d07bb9d1" class="cell" data-execution_count="3">
+<div id="30af8256" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Recorte de una región específica (y1:y2, x1:x2)</span></span>
@@ -198,7 +198,7 @@ Estas operaciones son esenciales en el preprocesamiento de imágenes antes de ap
 </section>
 <section id="rotación" class="level2">
 <h2 class="anchored" data-anchor-id="rotación">Rotación</h2>
-<div id="ce2240c0" class="cell" data-execution_count="4">
+<div id="f93567ad" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Obtener dimensiones</span></span>
@@ -222,7 +222,7 @@ Estas operaciones son esenciales en el preprocesamiento de imágenes antes de ap
 </section>
 <section id="traslación-desplazamiento" class="level2">
 <h2 class="anchored" data-anchor-id="traslación-desplazamiento">Traslación (Desplazamiento)</h2>
-<div id="ac7c7e52" class="cell" data-execution_count="5">
+<div id="6ed62221" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Matriz de traslación: mover 50 px a la derecha y 30 px abajo</span></span>

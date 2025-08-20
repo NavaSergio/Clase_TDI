@@ -29,7 +29,7 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 
 # Función auxiliar para mostrar imágenes en color o grises
-def mostrar_img(img, titulo="Imagen"):
+def mostrar_img(img, titulo="Imagen", cmap=None):
     plt.figure(figsize=(5,5))
     if len(img.shape) == 2:  # Escala de grises
         plt.imshow(img, cmap='gray')
