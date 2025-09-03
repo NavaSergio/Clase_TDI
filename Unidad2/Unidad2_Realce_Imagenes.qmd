@@ -6,24 +6,33 @@ author:
     id: sn
     email: s3rgio.nava@gmail.com
     affiliation: 
-        - id: cimat
-          name: CIMAT/INFOTEC
-          city: Aguascalientes
-          state: Ags
+      - id: cimat
+        name: CIMAT/INFOTEC
+        city: Aguascalientes
+        state: Ags
 format: 
   revealjs:
     slide-number: true
     theme: simple
-    fontsize: 2.1em
     logo: figs/logo-infotec.jpeg
+    footer: "CIMAT – INFOTEC"
     css: style.css
     chalkboard: true
-    menu: TRUE
+    menu: true
+    navigation-mode: linear
+    progress: true
     transition: slide
     background-transition: fade
     title-slide-attributes:
-      data-background-image: /figs/DCCD.png
-      data-background-size: 100% 100%;     
+      data-background-image: figs/DCCD.png
+      data-background-size: cover
+      data-background-opacity: "0.3"
+    toc: true
+    toc-depth: 2
+    toc-title: "Contenido"
+    code-fold: true
+    code-line-numbers: true
+    code-copy: true
 date: 2025-02-19
 ---
 
@@ -48,7 +57,7 @@ date: 2025-02-19
 
 
 
-## Descomposición en canales RGB
+## Descomposición en canales RGB {.smaller}
 
 - Una imagen en color puede verse como **tres matrices en escala de grises**:  
   - **Canal R (Rojo)**  
@@ -58,33 +67,21 @@ date: 2025-02-19
 - Cada canal almacena intensidades entre 0 y 255.  
 - La combinación de los tres forma la imagen en color.  
 
-<div style="display:flex; gap:30px; justify-content:center; align-items:center;">
+::: {layout="[[1,1,1]]"}
+![Canal R](canal_R.png){width=180}
 
-  <div style="text-align:center;">
-    <img src="canal_R.png" width="180"><br>
-    <b>Canal R</b>
-  </div>
+![Canal G](canal_G.png){width=180}
 
-  <div style="text-align:center;">
-    <img src="canal_G.png" width="180"><br>
-    <b>Canal G</b>
-  </div>
+![Canal B](canal_B.png){width=180}
+:::
 
-  <div style="text-align:center;">
-    <img src="canal_B.png" width="180"><br>
-    <b>Canal B</b>
-  </div>
-
-</div>
-
-<div style="text-align:center; margin-top:15px;">
-  <img src="imagen_RGB.png" width="220"><br>
-  <b>Imagen combinada</b>
-</div>
+::: {.center}
+![Imagen combinada](imagen_RGB.png){width=220}
+:::
 
 ---
 
-## Representación de imágenes
+## Representación de imágenes {.smaller}
 
 - Una imagen digital en escala de grises puede representarse como una **matriz** $I$ de tamaño $M \times N$:  
 
@@ -105,6 +102,7 @@ $$
 ## Visualización de un patch en RGB y sus canales
 
 ```{python}
+#| echo: true
 import cv2
 import matplotlib.pyplot as plt
 import numpy as np
@@ -182,6 +180,7 @@ display(Markdown(f"""
 ## Visualización de valores en escala de grises
 
 ```{python}
+#| echo: true
 import cv2
 import matplotlib.pyplot as plt
 import numpy as np
@@ -226,29 +225,37 @@ donde $r_k$ es un nivel de gris y $n_k$ el número de píxeles con ese valor.
 ### Código: Construcción del histograma
 
 ```{python}
+#| echo: true
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
 # Cargar imagen en escala de grises
-img = cv2.imread( "imagenes/frutas.jpg", cv2.IMREAD_GRAYSCALE)
+img = cv2.imread( "imagenes/DPP0357.TIF", cv2.IMREAD_GRAYSCALE)
 crop = img[:256, :256]
 
 # Calcular histograma con OpenCV
 hist = cv2.calcHist([crop], [0], None, [256], [0,256])
 
+# Crear una figura con dos subplots lado a lado
+plt.figure(figsize=(12,4))
+plt.subplot(1,2,1)
+plt.imshow(crop, cmap='gray')
+plt.title("Imagen")
+plt.axis('off')
 
-plt.figure(figsize=(6,4))
+plt.subplot(1,2,2) 
 plt.bar(np.arange(256), hist.flatten(), color='gray')
-plt.title("Histograma manual")
+plt.title("Histograma")
 plt.xlabel("Intensidad")
 plt.ylabel("Frecuencia")
 plt.show()
+
 ```
 
 ---
 
-## Ecualización de histograma
+## Ecualización de histograma {.smaller}
 
 - Busca redistribuir los niveles de gris para mejorar el contraste.  
 - Función de transformación acumulativa:  
@@ -266,26 +273,72 @@ donde:
 ### Código: Ecualización con OpenCV
 
 ```{python}
+#| echo: true
 # Ecualización de histograma
 eq = cv2.equalizeHist(crop)
 
+# Calcular histogramas
+hist_orig = cv2.calcHist([crop], [0], None, [256], [0,256])
+hist_eq = cv2.calcHist([eq], [0], None, [256], [0,256])
+
 # Mostrar comparación
-plt.figure(figsize=(10,4))
-plt.subplot(1,2,1)
+plt.figure(figsize=(9,6))
+
+# Imagen original y su histograma
+plt.subplot(2,2,1)
 plt.imshow(crop, cmap='gray')
 plt.title("Imagen original")
 plt.axis('off')
 
-plt.subplot(1,2,2)
+plt.subplot(2,2,3)
+plt.bar(np.arange(256), hist_orig.flatten(), color='gray')
+plt.title("Histograma original")
+plt.xlabel("Intensidad")
+plt.ylabel("Frecuencia")
+
+# Imagen ecualizada y su histograma
+plt.subplot(2,2,2)
 plt.imshow(eq, cmap='gray')
 plt.title("Imagen ecualizada")
 plt.axis('off')
+
+plt.subplot(2,2,4)
+plt.bar(np.arange(256), hist_eq.flatten(), color='gray')
+plt.title("Histograma ecualizado")
+plt.xlabel("Intensidad")
+plt.ylabel("Frecuencia")
+
+plt.tight_layout()
 plt.show()
+
 ```
 
 ---
 
-## Filtrado espacial
+## Convolución en imágenes {.smaller}
+
+- La **convolución** es la operación matemática que permite aplicar un **kernel** o **máscara** sobre una imagen.
+- Cada píxel resultante se obtiene como combinación ponderada de sus vecinos:
+
+
+$$
+g(x,y) = \sum_{s=-a}^{a} \sum_{t=-b}^{b} H(s,t) \cdot f(x+s, y+t)
+$$
+
+
+- Donde:
+  - $f(x,y)$ = imagen original
+  - $g(x,y)$ = imagen filtrada
+  - $H$ = kernel o máscara (ej. 3x3, 5x5)
+
+- Es la **base de los filtros espaciales**:
+  - Suavizado  
+  - Realce de bordes  
+  - Detección de patrones
+
+---
+
+## Filtrado espacial {.smaller}
 
 - Consiste en aplicar una **máscara o kernel** $H$ a la imagen:  
 
@@ -300,7 +353,7 @@ $$
 
 ---
 
-### Ejemplo de kernel promedio 3x3
+### Ejemplo de kernel promedio 3x3 {.smaller}
 
 $$
 H = \frac{1}{9}
@@ -314,17 +367,17 @@ $$
 
 ---
 
-## Filtro Promedio (Blur)
+## Filtro Promedio (Blur) {.smaller}
 
-- El valor del píxel se reemplaza por el **promedio aritmético** de los píxeles en una ventana \(k \times k\).  
+- El valor del píxel se reemplaza por el **promedio aritmético** de los píxeles en una ventana $k \times k$.  
 
-\[
+$$ 
 g(x,y) = \frac{1}{k^2} \sum_{s=-a}^{a} \sum_{t=-b}^{b} f(x+s, y+t)
-\]
+$$
 
 - Kernel:
 
-\[
+$$
 H = \frac{1}{k^2}
 \begin{bmatrix}
 1 & 1 & \cdots & 1 \\
@@ -332,52 +385,128 @@ H = \frac{1}{k^2}
 \vdots & \vdots & \ddots & \vdots \\
 1 & 1 & \cdots & 1
 \end{bmatrix}
-\]
+$$
 
 ---
 
-## Filtro Gaussiano
+## Ejemplo paso a paso {.smaller}
+
+
+Imagen local (parche 3x3):
+
+$$
+\begin{bmatrix}
+10 & 20 & 30 \\
+40 & 50 & 60 \\
+70 & 80 & 90
+\end{bmatrix}
+$$
+
+Kernel de suavizado:
+
+$$
+\frac{1}{9}
+\begin{bmatrix}
+1 & 1 & 1 \\
+1 & 1 & 1 \\
+1 & 1 & 1
+\end{bmatrix}
+$$
+
+Resultado para el píxel central = $\tfrac{1}{9}(10+20+\cdots+90)=50$.
+
+---
+---
+
+## ¿Qué pasa en los bordes?
+
+- Al aplicar un kernel, algunos vecinos quedan **fuera de la imagen**.
+- Estrategias comunes de relleno (*padding*):
+  - **Zero padding**: rellena con ceros.
+  - **Replicate padding**: repite el valor de la orilla.
+  - **Reflect padding**: refleja los valores como en un espejo.
+  - **Valid convolution**: solo se calculan píxeles donde el kernel cabe completo.
+
+---
+
+### Ejemplo en OpenCV
+
+```{python}
+#| echo: true
+import cv2
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Cargar imagen en escala de grises
+#img = cv2.imread("imagenes/frutas.jpg", cv2.IMREAD_GRAYSCALE)
+crop = img[:256,:256]
+
+# Kernel promedio 3x3
+kernel = np.ones((3,3), np.float32) / 9
+
+# Distintos modos de borde
+res_zero = cv2.filter2D(crop, -1, kernel, borderType=cv2.BORDER_CONSTANT)   # cero
+res_replicate = cv2.filter2D(crop, -1, kernel, borderType=cv2.BORDER_REPLICATE)
+res_reflect = cv2.filter2D(crop, -1, kernel, borderType=cv2.BORDER_REFLECT)
+
+# Mostrar resultados
+titles = ["Original", "Zero Padding", "Replicate", "Reflect"]
+images = [crop, res_zero, res_replicate, res_reflect]
+
+plt.figure(figsize=(12,6))
+for i, (im, title) in enumerate(zip(images, titles)):
+    plt.subplot(2,2,i+1)
+    plt.imshow(im, cmap='gray')
+    plt.title(title)
+    plt.axis('off')
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+## Filtro Gaussiano {.smaller}
 
 - Utiliza una función **Gaussiana bidimensional** como kernel.  
 
-\[
+$$
 G(s,t) = \frac{1}{2\pi\sigma^2} \exp\left(-\frac{s^2+t^2}{2\sigma^2}\right)
-\]
+$$
 
 - Operación de filtrado:
 
-\[
+$$
 g(x,y) = \sum_{s=-a}^{a} \sum_{t=-b}^{b} G(s,t)\, f(x+s, y+t)
-\]
+$$
 
 - Normalizado:  
 
-\[
+$$
 \sum_{s,t} G(s,t) = 1
-\]
+$$
 
 ---
 
-## Filtro de Mediana
+## Filtro de Mediana {.smaller}
 
 - Es un método **no lineal**.  
-- En una ventana \(k \times k\), reemplaza el valor del píxel por la **mediana** de los valores en esa ventana.  
+- En una ventana $k \times k$, reemplaza el valor del píxel por la **mediana** de los valores en esa ventana.  
 
-\[
+$$
 g(x,y) = \operatorname{mediana}\{ f(x+s, y+t) \mid -a \leq s,t \leq a \}
-\]
+$$
 
 - Preserva bordes mejor que los filtros lineales.  
 - Muy eficaz contra ruido impulsivo ("sal y pimienta").  
 
 ---
 
-## Resumen Comparativo
+## Resumen Comparativo {.smaller}
 
 | Filtro     | Fórmula | Naturaleza | Ventajas | Desventajas |
 |------------|---------|------------|----------|-------------|
 | **Promedio (Blur)** | Promedio aritmético | Lineal | Simple, rápido | Borra bordes y detalles |
-| **Gaussiano** | Ponderación con distribución normal | Lineal | Suavizado natural, controlado por \(\sigma\) | Más costoso computacionalmente |
+| **Gaussiano** | Ponderación con distribución normal | Lineal | Suavizado natural, controlado por $\sigma$ | Más costoso computacionalmente |
 | **Mediana** | Mediana de intensidades | No lineal | Preserva bordes, elimina ruido impulsivo | Menos eficiente en ventanas grandes |
 
 
@@ -386,6 +515,7 @@ g(x,y) = \operatorname{mediana}\{ f(x+s, y+t) \mid -a \leq s,t \leq a \}
 ### Código: Filtros en OpenCV
 
 ```{python}
+#| echo: true
 # Filtros espaciales
 blur3 = cv2.blur(crop, (3,3))
 gauss11 = cv2.GaussianBlur(crop, (11,11), 0)
@@ -414,7 +544,7 @@ plt.show()
 
 ---
 
-## Aprende 📚
+## Aprende
 
 Consulta y toma notas de los siguientes materiales:
 
