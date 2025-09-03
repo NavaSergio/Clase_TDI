@@ -22,7 +22,7 @@ format:
     navigation-mode: linear
     progress: true
     transition: slide
-    background-transition: fade
+    background-transition: fade 
     title-slide-attributes:
       data-background-image: figs/DCCD.png
       data-background-size: cover
@@ -59,6 +59,8 @@ date: 2025-02-19
 
 ## Descomposición en canales RGB {.smaller}
 
+::: {.columns}
+::: {.column width="40%"}
 - Una imagen en color puede verse como **tres matrices en escala de grises**:  
   - **Canal R (Rojo)**  
   - **Canal G (Verde)**  
@@ -66,7 +68,9 @@ date: 2025-02-19
 
 - Cada canal almacena intensidades entre 0 y 255.  
 - La combinación de los tres forma la imagen en color.  
+:::
 
+::: {.column width="60%"}
 ::: {layout="[[1,1,1]]"}
 ![Canal R](canal_R.png){width=180}
 
@@ -78,6 +82,9 @@ date: 2025-02-19
 ::: {.center}
 ![Imagen combinada](imagen_RGB.png){width=220}
 :::
+:::
+:::
+
 
 ---
 
@@ -270,6 +277,88 @@ donde:
 
 ---
 
+## Ejemplo de ecualización de histograma {.smaller}
+
+::: {.columns}
+::: {.column width="50%"}
+Consideremos una imagen de $M \times N = 8$ píxeles, con intensidades de 3 bits  
+($L = 8$ niveles, de 0 a 7):
+
+$$
+I = [3, 3, 4, 5, 6, 6, 6, 7]
+$$
+:::
+::: {.column width="50%"}
+### 1. Histograma de frecuencias
+| Intensidad ($r_k$) | Frecuencia ($n_k$) |
+|--------------------|--------------------|
+| 0 | 0 |
+| 1 | 0 |
+| 2 | 0 |
+| 3 | 2 |
+| 4 | 1 |
+| 5 | 1 |
+| 6 | 3 |
+| 7 | 1 |
+:::
+:::
+
+---
+
+### 2. Probabilidades y acumuladas
+
+Probabilidad: $p(r_k) = n_k / 8$  
+
+| $r_k$ | $p(r_k)$ | CDF $\sum_{j=0}^k p(r_j)$ |
+|-------|----------|---------------------------|
+| 3 | 0.25 | 0.25 |
+| 4 | 0.125 | 0.375 |
+| 5 | 0.125 | 0.500 |
+| 6 | 0.375 | 0.875 |
+| 7 | 0.125 | 1.000 |
+
+---
+
+### 3. Nueva asignación de intensidades
+
+::: {.columns}
+::: {.column width="50%"}
+$$
+s_k = (L-1)\sum_{j=0}^k p(r_j)
+$$
+:::
+
+::: {.column width="50%"}
+Con $L-1 = 7$:
+
+| $r_k$ | CDF | $s_k$ |
+|-------|-----|-------|
+| 3 | 0.25  | $7 \cdot 0.25 = 1.75 \approx 2$ |
+| 4 | 0.375 | $7 \cdot 0.375 = 2.63 \approx 3$ |
+| 5 | 0.50  | $7 \cdot 0.50 = 3.50 \approx 4$ |
+| 6 | 0.875 | $7 \cdot 0.875 = 6.13 \approx 6$ |
+| 7 | 1.00  | $7 \cdot 1.00 = 7.00$ |
+:::
+:::
+
+---
+
+### 4. Imagen ecualizada
+
+Imagen original:  
+$$
+[3, 3, 4, 5, 6, 6, 6, 7]
+$$  
+
+Imagen ecualizada:  
+$$
+[2, 2, 3, 4, 6, 6, 6, 7]
+$$  
+
+**Conclusión:** La ecualización redistribuyó los valores, extendiendo mejor el contraste entre 2 y 7.
+
+---
+
 ### Código: Ecualización con OpenCV
 
 ```{python}
@@ -324,7 +413,6 @@ plt.show()
 $$
 g(x,y) = \sum_{s=-a}^{a} \sum_{t=-b}^{b} H(s,t) \cdot f(x+s, y+t)
 $$
-
 
 - Donde:
   - $f(x,y)$ = imagen original
@@ -415,10 +503,10 @@ $$
 
 Resultado para el píxel central = $\tfrac{1}{9}(10+20+\cdots+90)=50$.
 
----
+
 ---
 
-## ¿Qué pasa en los bordes?
+## ¿Qué pasa en los bordes? {.smaller}
 
 - Al aplicar un kernel, algunos vecinos quedan **fuera de la imagen**.
 - Estrategias comunes de relleno (*padding*):
@@ -467,6 +555,8 @@ plt.show()
 
 ## Filtro Gaussiano {.smaller}
 
+::: {.columns}
+::: {.column width="60%"}
 - Utiliza una función **Gaussiana bidimensional** como kernel.  
 
 $$
@@ -484,6 +574,22 @@ $$
 $$
 \sum_{s,t} G(s,t) = 1
 $$
+:::
+
+::: {.column width="40%"}
+
+$$
+\frac{1}{9}
+\begin{bmatrix}
+1 & 2 & 1 \\
+2 & 4 & 2 \\
+1 & 2 & 1
+\end{bmatrix}
+$$
+
+:::
+:::
+
 
 ---
 
