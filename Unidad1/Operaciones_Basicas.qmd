@@ -3,6 +3,7 @@ title: "Transformaciones básicas con OpenCV"
 format:
   html:
     code-fold: true
+    self-contained: true    
 jupyter: python3
 ---
 
@@ -45,6 +46,8 @@ carpeta = Path("imagenes")
 # Cargar imagen de ejemplo
 img = cv2.imread(str(carpeta / "frutas.jpg"))
 mostrar_img(img, "Imagen original")
+
+
 ```
 
 ---
@@ -59,6 +62,19 @@ mostrar_img(img_doble, "Doble tamaño")
 # Imagen a la mitad
 img_mitad = cv2.resize(img, None, fx=0.5, fy=0.5, interpolation=cv2.INTER_AREA)
 mostrar_img(img_mitad, "Mitad de tamaño")
+
+
+plt.imshow(cv2.cvtColor(img_doble, cv2.COLOR_BGR2RGB))
+plt.axis('off')
+plt.show()
+
+plt.imshow(cv2.cvtColor(img_mitad, cv2.COLOR_BGR2RGB))
+plt.axis('off')
+plt.show()
+
+print(img.shape)  # Dimensiones originales
+print(img_doble.shape)  # Dimensiones de la imagen al doble
+print(img_mitad.shape)  # Dimensiones de la imagen a la mitad
 ```
 
 ---

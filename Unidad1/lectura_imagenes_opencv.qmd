@@ -3,6 +3,7 @@ title: "Lectura de imágenes con OpenCV"
 format:
   html:
     code-fold: true
+    self-contained: true    
 jupyter: python3
 ---
 
@@ -57,12 +58,16 @@ img_jpg = cv2.imread(str(carpeta / "frutas.jpg"))
 mostrar_img(img_jpg, "Imagen JPG")
 
 # PNG con canal alfa (transparencia)
-img_png = cv2.imread(str(carpeta / "logo.png"), cv2.IMREAD_UNCHANGED)
+img_png = cv2.imread(str(carpeta / "373-3730435_paloma-dibujo-png.png"), cv2.IMREAD_UNCHANGED)
 mostrar_img(img_png[:, :, :3], "Imagen PNG (RGB)")
 
 # TIFF en escala de grises
 img_tiff = cv2.imread(str(carpeta / "DPP0357.TIF"), cv2.IMREAD_GRAYSCALE)
 mostrar_img(img_tiff, "Imagen TIFF (grises)")
+
+# TIFF en escala de color
+img_tiff2 = cv2.imread(str(carpeta / "DPP0357.TIF"), cv2.IMREAD_UNCHANGED)
+mostrar_img(img_tiff2, "Imagen TIFF")
 ```
 
 ---
@@ -72,14 +77,19 @@ mostrar_img(img_tiff, "Imagen TIFF (grises)")
 OpenCV no puede leer directamente formatos RAW de cámaras digitales. Usaremos `rawpy` para convertirlos a un arreglo NumPy.
 
 ```{python}
-# Ejemplo con un archivo RAW (CR2 de Canon, NEF de Nikon, etc.)
-ruta_raw = carpeta / "ejemplo.CR2"
+# Ejemplo con un archivo RAW (CR3 de Canon, NEF de Nikon, etc.)
+ruta_raw = carpeta / "IMG_0531.CR3"
 
 with rawpy.imread(str(ruta_raw)) as raw:
     rgb = raw.postprocess()
 
 # raw.postprocess() devuelve un arreglo RGB de 8 bits
 mostrar_img(rgb, "Imagen RAW procesada")
+
+plt.imshow(rgb)
+plt.title("Imagen RAW directa")
+plt.axis('off')
+plt.show()
 ```
 
 ---
