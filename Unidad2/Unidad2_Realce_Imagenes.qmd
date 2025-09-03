@@ -241,7 +241,7 @@ hist = cv2.calcHist([crop], [0], None, [256], [0,256])
 plt.figure(figsize=(12,4))
 plt.subplot(1,2,1)
 plt.imshow(crop, cmap='gray')
-plt.title("Imagen")
+plt.title("Imagen 256x256")
 plt.axis('off')
 
 plt.subplot(1,2,2) 
